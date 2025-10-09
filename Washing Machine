@@ -1,0 +1,59 @@
+#include <stdio.h>
+#include <windows.h> 
+
+void delay(int seconds) {
+    Sleep(seconds * 1000); 
+}
+
+int main() {
+    int choice;
+
+    while (1) { 
+        printf("===== Washing Machine Simulation =====\n");
+        printf("1. Quick Wash\n");
+        printf("2. Normal Wash\n");
+        printf("3. Heavy Wash\n");
+        printf("4. Exit\n");
+        printf("Enter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                printf("\nQuick Wash Selected (10 min cycle)\n");
+                printf("Filling water...\n"); delay(2);
+                printf("Washing clothes...\n"); delay(3);
+                printf("Rinsing...\n"); delay(2);
+                printf("Spinning...\n"); delay(2);
+                printf("Quick Wash Completed!\n\n");
+                break;
+
+            case 2:
+                printf("\nNormal Wash Selected (20 min cycle)\n");
+                printf("Filling water...\n"); delay(3);
+                printf("Washing clothes...\n"); delay(5);
+                printf("Rinsing...\n"); delay(3);
+                printf("Spinning...\n"); delay(3);
+                printf("Normal Wash Completed!\n\n");
+                break;
+
+            case 3:
+                printf("\nHeavy Wash Selected (30 min cycle)\n");
+                printf("Filling water...\n"); delay(4);
+                printf("Washing clothes...\n"); delay(6);
+                printf("Rinsing...\n"); delay(4);
+                printf("Spinning...\n"); delay(4);
+                printf("Heavy Wash Completed!\n\n");
+                break;
+
+            case 4:
+                printf("Exiting... Goodbye!\n");
+                return 0;
+
+            default:
+                printf("Invalid choice! Please try again.\n\n");
+        }
+    }
+
+    return 0;
+}
+
