@@ -1,0 +1,119 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX 100
+
+typedef struct {
+    int id;
+    char title[100];
+    char author[100];
+    int issued; // 0: available, 1: issued
+} Book;
+
+Book books[MAX];
+int book_count = 0;
+
+// File operations
+void load_books() {
+    FILE *fp = fopen("books.dat", "rb");
+    if (fp) {
+        fread(&book_count, sizeof(int), 1, fp);
+        fread(books, sizeof(Book), book_count, fp);
+        fclose(fp);
+    }
+}
+
+void save_books() {
+    FILE *fp = fopen("books.dat", "wb");
+    fwrite(&book_count, sizeof(int), 1, fp);
+    fwrite(books, sizeof(Book), book_count, fp);
+    fclose(fp);
+}
+
+// Add a book
+void add_book() {
+    Book b;
+    b.id = book_count + 1;
+    printf("Title: "); scanf(" %[^\n]", b.title);
+    printf("Author: "); scanf(" %[^\n]", b.author);
+    b.issued = 0;
+    books[book_count++] = b;
+    save_books();
+    printf("Book added!\n");
+}
+
+// Search by title
+void search_title() {
+    char key[100];
+    printf("Enter title to search: "); scanf(" %[^\n]", key);
+    for (int i = 0; i < book_count; i++)
+        if (strstr(books[i].title, key))
+            printf("ID:%d Title:%s Author:%s Issued:%d\n", books[i].id, books[i].title, books[i].author, books[i].issued);
+}
+
+// Search by author
+void search_author() {
+    char key[100];
+    printf("Enter author to search: "); scanf(" %[^\n]", key);
+    for (int i = 0; i < book_count; i++)
+        if (strstr(books[i].author, key))
+            printf("ID:%d Title:%s Author:%s Issued:%d\n", books[i].id, books[i].title, books[i].author, books[i].issued);
+}
+
+// Sort books (by title)
+int cmp_title(const void *a, const void *b) {
+    return strcmp(((Book*)a)->title, ((Book*)b)->title);
+}
+void sort_title() {
+    qsort(books, book_count, sizeof(Book), cmp_title);
+    printf("Books sorted by title.\n");
+}
+
+// Issue/Return
+void issue_book() {
+    int id; printf("Enter book ID to issue: "); scanf("%d", &id);
+    for (int i = 0; i < book_count; i++)
+        if (books[i].id == id && books[i].issued == 0) {
+            books[i].issued = 1;
+            save_books();
+            printf("Book issued.\n"); return;
+        }
+    printf("Book not found or already issued.\n");
+}
+void return_book() {
+    int id; printf("Enter book ID to return: "); scanf("%d", &id);
+    for (int i = 0; i < book_count; i++)
+        if (books[i].id == id && books[i].issued == 1) {
+            books[i].issued = 0;
+            save_books();
+            printf("Book returned.\n"); return;
+        }
+    printf("Book not found or not issued.\n");
+}
+
+// Display
+void display_books() {
+    for (int i = 0; i < book_count; i++)
+        printf("ID:%d Title:%s Author:%s Issued:%d\n", books[i].id, books[i].title, books[i].author, books[i].issued);
+}
+
+// Main menu
+int main() {
+    load_books();
+    int choice;
+    do {
+        printf("\n1.Add Book 2.Search Title 3.Search Author 4.Sort Title 5.Issue 6.Return 7.Display 0.Exit\n");
+        scanf("%d", &choice);
+        switch(choice) {
+            case 1: add_book(); break;
+            case 2: search_title(); break;
+            case 3: search_author(); break;
+            case 4: sort_title(); break;
+            case 5: issue_book(); break;
+            case 6: return_book(); break;
+            case 7: display_books(); break;
+        }
+    } while (choice != 0);
+    return 0;
+}
